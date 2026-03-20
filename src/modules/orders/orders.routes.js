@@ -1,18 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const { createOrder, getOrderById, getOrderHistory } = require("./orders.controller");
+const { protect } = require("../../middlewares/authMiddleware");
 
-const orderController = require("./orders.controller");
-
-// CREATE ORDER
-router.post("/", orderController.createOrder);
-
-// GET ALL ORDERS
-router.get("/", orderController.getAllOrders);
-
-// GET ORDER BY ID
-router.get("/:id", orderController.getOrderById);
-
-// UPDATE ORDER
-router.patch("/:id", orderController.updateOrder);
+router.post("/", protect, createOrder);
+router.get("/history", protect, getOrderHistory);
+router.get("/:id", protect, getOrderById);
 
 module.exports = router;
