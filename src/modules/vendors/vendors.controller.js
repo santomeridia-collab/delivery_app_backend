@@ -19,6 +19,17 @@ exports.getVendorById = async (req, res, next) => {
 
 exports.createVendor = async (req, res, next) => {
   try {
+    // Only customers can register as vendors
+    if (req.user.role !== "customer") {
+      return res.status(403).json({ message: "Only customers can register as vendors" });
+    }
+    
+    // Check if user already has a vendor profile
+    const existingVendor = await Vendor.findOne({ userId: req.user.id });
+    if (existingVendor) {
+      return res.status(400).json({ message: "User already has a vendor profile" });
+    }
+    
     const vendor = await Vendor.create({ ...req.body, userId: req.user.id });
     res.status(201).json({ message: "Vendor registered, awaiting approval", data: vendor });
   } catch (err) { next(err); }
