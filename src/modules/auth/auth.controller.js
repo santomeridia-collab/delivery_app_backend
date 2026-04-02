@@ -8,6 +8,11 @@ exports.sendOtp = async (req, res, next) => {
   try {
     const { phone } = req.body;
     if (!phone) return res.status(400).json({ message: "Phone required" });
+    
+    // Validate phone number format
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      return res.status(400).json({ message: "Phone number must be 10 digits and start with 6-9" });
+    }
 
     const otp = generateOtp();
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
