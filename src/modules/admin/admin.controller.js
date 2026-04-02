@@ -25,6 +25,10 @@ exports.approveVendor = async (req, res, next) => {
   try {
     const vendor = await Vendor.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
     if (!vendor) return res.status(404).json({ message: "Vendor not found" });
+    
+    // Update user role to vendor
+    await User.findByIdAndUpdate(vendor.userId, { role: "vendor" });
+    
     res.json({ message: "Vendor approved", data: vendor });
   } catch (err) { next(err); }
 };
